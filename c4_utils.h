@@ -1,0 +1,68 @@
+#include <stdint.h>
+
+
+#ifdef _MSC_VER
+ #include <intrin.h>
+ #ifdef _WIN64
+  #define BIT_COUNT(x)              (__popcnt64(x))
+ #else
+  #define BIT_COUNT(x)              (__popcnt((x)>>32) + __popcnt((x)))
+ #endif
+#elif __GNUC__
+ #define BIT_COUNT(x)               (__builtin_popcountll(x))
+#else
+ #define BIT_COUNT(x)
+#endif
+
+typedef uint8_t                     bool;
+#define true                        (1)
+#define false                       (0)
+
+#define BOARD_WIDTH                 (7)
+#define BOARD_HEIGHT                (6)
+#define BOARD_SIZE                  (BOARD_WIDTH * BOARD_HEIGHT)
+#define BOARD_MASK                  (0x000003FFFFFFFFFF)    // lower 42 bits
+#define IS_BOARD_FULL(y, r)         (((y) | (r)) == BOARD_MASK)
+#define SEQ_LEN                     (4)
+#define HRZ_SEQ_MASK                (0x000000000000000F)
+#define VRT_SEQ_MASK                (0x0000000000204081)
+#define DGNL_SEQ_MASK               (0x0000000001010101)
+#define REV_DGNL_SEQ_MASK           (0x0000000000208208)
+#define IS_SEQ_ONE_TYPE(s1, s2)     (((s1) ^ (s2)) == (s1))
+#define GET_HRZ_SEQ(brd, r, c)      (((brd) >> (38 - ((r-1) * BOARD_WIDTH + (c-1)))) & HRZ_SEQ_MASK)        // horizontal sequence
+#define GET_VRT_SEQ(brd, r, c)      (((brd) >> (20 - ((r-1) * BOARD_WIDTH) - (c-1))) & VRT_SEQ_MASK)        // vertical sequence
+                                                                                                            // formula of 20:
+                                                                                                            // (board_width - 1)                        "number of shift right per row"
+                                                                                                            // * (board_height - (seq_len - 1))         "number of rows that can start a vertical sequence of 4"
+                                                                                                            // + ((board_height - (seq_len - 1)) - 1)   "number of times jumping to next row"
+#define GET_DGNL_SEQ(brd, r, c)     (((brd) >> (17 - ((r-1) * BOARD_WIDTH) - (c-1))) & DGNL_SEQ_MASK)       // diagonal sequence
+                                                                                                            // formula of 17:
+                                                                                                            // (board_width - 4)                        "number of shift right for diagonals starting the same row"
+                                                                                                            // * (board_height - (seq_len - 1))         "number of rows that can start a diagonal sequence of 4"
+                                                                                                            // + ((board_height - (seq_len - 1)) - 1)   "number of times jumping to next row"
+                                                                                                            // * (seq_len - 1)                          "number of squares in each row that can't start a diagonal"
+                                                                                                            // + ((board_height - (seq_len - 1)) - 1)   "number of times jumping to next row"
+#define GET_REV_DGNL_SEQ(brd, r, c) (((brd) >> (17 - ((r-1) * BOARD_WIDTH) - (c-4))) & REV_DGNL_SEQ_MASK)   // reverse diagonal sequence
+                                                                                                            // formula of 17:
+                                                                                                            // (board_width - 4)                        "number of shift right for diagonals starting the same row"
+                                                                                                            // * (board_height - (seq_len - 1))         "number of rows that can start a diagonal sequence of 4"
+                                                                                                            // + ((board_height - (seq_len - 1)) - 1)   "number of times jumping to next row"
+                                                                                                            // * (seq_len - 1)                          "number of squares in each row that can't start a diagonal"
+                                                                                                            // + ((board_height - (seq_len - 1)) - 1)   "number of times jumping to next row"
+
+/*
+    Represents a Connect 4 board position.
+
+    y_board is the locations of the Yellow pieces on the board.
+    r_board is the locations of the Red pieces on the board.
+
+    Only lower 42 (6*7) bits of each sub-board are used, upper 22 bits are reserved.
+*/
+typedef struct _c4_bitboard
+{
+    uint64_t y_board;
+    uint64_t r_board;
+} c4_bitboard;
+
+
+int16_t calc_rule_of_2(c4_bitboard* board);
