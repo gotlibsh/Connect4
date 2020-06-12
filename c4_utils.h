@@ -31,6 +31,7 @@ typedef uint8_t                     bool;
 #define IS_BOARD_FULL(r, y)         (((r) | (y)) == BOARD_MASK)
 
 #define STR_PIECE(p)                (((p) == RED) ? "X" : ((p) == YELLOW) ? "O" : "-")
+#define OPP_PIECE(p)                (((p) == RED) ? YELLOW : ((p) == YELLOW) ? RED : EMPTY)
 
 #define SEQ_LEN                     (4)
 #define COL_MASK                    (0x0000020408102040)
@@ -75,6 +76,9 @@ typedef struct _c4_bitboard
     uint64_t r_board;
 } c4_bitboard;
 
+/*
+    Represents a single piece on the board.
+*/
 typedef enum _piece
 {
     RED     = 0,
@@ -82,13 +86,27 @@ typedef enum _piece
     EMPTY   = 2
 } piece;
 
+/*
+    Represents a player.
+*/
 typedef piece   player;
 
+/*
+    Represents a score of a given board.
+*/
+typedef int16_t score_t;
+#define MAX_SCORE   INT16_MAX
+#define MIN_SCORE   INT16_MIN
+
+
+/*
+    General utility functions.
+*/
 void  set_piece(c4_bitboard* board, uint8_t row, uint8_t col, piece p);
 piece get_piece(c4_bitboard* board, uint8_t row, uint8_t col);
 void add_piece(c4_bitboard* board, uint8_t index, piece p);
 bool is_game_over(c4_bitboard* board, player* p);
-
+void get_child_boards(c4_bitboard* board, c4_bitboard* children, piece p, uint8_t* child_count);
 void print_board(c4_bitboard* board);
 
 #endif

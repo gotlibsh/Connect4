@@ -117,6 +117,34 @@ bool is_game_over(c4_bitboard* board, player* p)
     return false;
 }
 
+void get_child_boards(c4_bitboard* board, c4_bitboard* children, piece p, uint8_t* child_count)
+{
+    int child_index = 0;
+    uint64_t full_col;
+    player dummy;
+
+
+    *child_count = 0;
+    if (is_game_over(board, &dummy))
+    {
+        return;
+    }
+
+    for (int i = 0; i < BOARD_WIDTH; i++)
+    {
+        full_col = GET_COL(board->r_board, i) | GET_COL(board->y_board, i);
+        
+        if (BIT_COUNT(full_col) != BOARD_HEIGHT)    // still room for a piece in this column
+        {
+            children[child_index] = *board;
+            add_piece(&children[child_index], i, p);
+            child_index++;
+        }
+    }
+
+    *child_count = child_index;
+}
+
 void print_board(c4_bitboard* board)
 {
     uint8_t row, col;
