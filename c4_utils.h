@@ -33,6 +33,8 @@ typedef uint8_t                     bool;
 #define STR_PIECE(p)                (((p) == RED) ? "X" : ((p) == YELLOW) ? "O" : "-")
 
 #define SEQ_LEN                     (4)
+#define COL_MASK                    (0x0000020408102040)
+#define GET_COL(brd, c)             ((brd) & (COL_MASK >> (c-1)))
 #define HRZ_SEQ_MASK                (0x000000000000000F)
 #define VRT_SEQ_MASK                (0x0000000000204081)
 #define DGNL_SEQ_MASK               (0x0000000001010101)
@@ -82,6 +84,8 @@ typedef enum _piece
 
 void  set_piece(c4_bitboard* board, uint8_t row, uint8_t col, piece p);
 piece get_piece(c4_bitboard* board, uint8_t row, uint8_t col);
+
+void add_piece(c4_bitboard* board, uint8_t index, piece p);
 
 void print_board(c4_bitboard* board);
 
