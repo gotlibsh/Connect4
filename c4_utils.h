@@ -82,10 +82,12 @@ typedef enum _piece
     EMPTY   = 2
 } piece;
 
+typedef piece   player;
+
 void  set_piece(c4_bitboard* board, uint8_t row, uint8_t col, piece p);
 piece get_piece(c4_bitboard* board, uint8_t row, uint8_t col);
 void add_piece(c4_bitboard* board, uint8_t index, piece p);
-bool is_game_over(c4_bitboard* board);
+bool is_game_over(c4_bitboard* board, player* p);
 
 void print_board(c4_bitboard* board);
 

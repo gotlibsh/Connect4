@@ -33,8 +33,10 @@ void add_piece(c4_bitboard* board, uint8_t col, piece p)
     set_piece(board, row, col, p);
 }
 
-bool is_game_over(c4_bitboard* board)
+bool is_game_over(c4_bitboard* board, player* p)
 {
+    *p = EMPTY;
+
     if (IS_BOARD_FULL(board->r_board, board->y_board))
     {
         return true;
@@ -45,9 +47,14 @@ bool is_game_over(c4_bitboard* board)
     {
         for (int col = 1; col <= BOARD_WIDTH - (SEQ_LEN-1); col++)
         {
-            if (((GET_HRZ_SEQ(board->r_board, row, col) & HRZ_SEQ_MASK) == HRZ_SEQ_MASK) ||
-                ((GET_HRZ_SEQ(board->y_board, row, col) & HRZ_SEQ_MASK) == HRZ_SEQ_MASK))
+            if ((GET_HRZ_SEQ(board->r_board, row, col) & HRZ_SEQ_MASK) == HRZ_SEQ_MASK)
             {
+                *p = RED;
+                return true;
+            }
+            if ((GET_HRZ_SEQ(board->y_board, row, col) & HRZ_SEQ_MASK) == HRZ_SEQ_MASK)
+            {
+                *p = YELLOW;
                 return true;
             }
         }
@@ -58,9 +65,14 @@ bool is_game_over(c4_bitboard* board)
     {
         for (int col = 1; col <= BOARD_WIDTH; col++)
         {
-            if (((GET_VRT_SEQ(board->r_board, row, col) & VRT_SEQ_MASK) == VRT_SEQ_MASK) ||
-                ((GET_VRT_SEQ(board->y_board, row, col) & VRT_SEQ_MASK) == VRT_SEQ_MASK))
+            if ((GET_VRT_SEQ(board->r_board, row, col) & VRT_SEQ_MASK) == VRT_SEQ_MASK)
             {
+                *p = RED;
+                return true;
+            }
+            if ((GET_VRT_SEQ(board->y_board, row, col) & VRT_SEQ_MASK) == VRT_SEQ_MASK)
+            {
+                *p = YELLOW;
                 return true;
             }
         }
@@ -71,9 +83,14 @@ bool is_game_over(c4_bitboard* board)
     {
         for (int col = 1; col <= BOARD_WIDTH - (SEQ_LEN-1); col++)
         {
-            if (((GET_DGNL_SEQ(board->r_board, row, col) & DGNL_SEQ_MASK) == DGNL_SEQ_MASK) ||
-                ((GET_DGNL_SEQ(board->y_board, row, col) & DGNL_SEQ_MASK) == DGNL_SEQ_MASK))
+            if ((GET_DGNL_SEQ(board->r_board, row, col) & DGNL_SEQ_MASK) == DGNL_SEQ_MASK)
             {
+                *p = RED;
+                return true;
+            }
+            if ((GET_DGNL_SEQ(board->y_board, row, col) & DGNL_SEQ_MASK) == DGNL_SEQ_MASK)
+            {
+                *p = YELLOW;
                 return true;
             }
         }
@@ -84,9 +101,14 @@ bool is_game_over(c4_bitboard* board)
     {
         for (int col = SEQ_LEN; col <= BOARD_WIDTH; col++)
         {
-            if (((GET_REV_DGNL_SEQ(board->r_board, row, col) & REV_DGNL_SEQ_MASK) == REV_DGNL_SEQ_MASK) ||
-                ((GET_REV_DGNL_SEQ(board->y_board, row, col) & REV_DGNL_SEQ_MASK) == REV_DGNL_SEQ_MASK))
+            if ((GET_REV_DGNL_SEQ(board->r_board, row, col) & REV_DGNL_SEQ_MASK) == REV_DGNL_SEQ_MASK)
             {
+                *p = RED;
+                return true;
+            }
+            if ((GET_REV_DGNL_SEQ(board->y_board, row, col) & REV_DGNL_SEQ_MASK) == REV_DGNL_SEQ_MASK)
+            {
+                *p = YELLOW;
                 return true;
             }
         }
