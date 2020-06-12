@@ -42,6 +42,7 @@ void test_get_piece()
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
 
+
     /*
     X - - - - - -
     - X - - - - -
@@ -67,6 +68,7 @@ void test_set_piece()
 {
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
+
 
     /*
     X - - O - - -
@@ -94,6 +96,7 @@ void test_add_piece()
 {
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
+
 
     /*
     - - - - - - -
@@ -244,6 +247,7 @@ void test_rule_of_center()
     c4_bitboard* pb = &b;
     extern int8_t rule_of_center_magic_score;
 
+
     /*
     - - - - - - -
     - - - - - - -
@@ -279,6 +283,65 @@ void test_rule_of_center()
     b.r_board = 0x0000000080020008;
     b.y_board = 0x0000004001000400;
     assert(calc_rule_of_center(pb) == 0);
+}
+
+extern int16_t calc_winning_rule(c4_bitboard* board);
+void test_winning_rule()
+{
+    c4_bitboard b = {0};
+    c4_bitboard* pb = &b;
+    extern int8_t winning_rule_magic_score;
+
+
+    assert(calc_winning_rule(pb) == 0);
+
+    /*
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    X X X X - - -
+    */
+    b.r_board = 0x0000000000000078;
+    b.y_board = 0x0000000000000000;
+    assert(calc_winning_rule(pb) == (1)*(winning_rule_magic_score));
+    
+    /*
+    - - - - - - -
+    - - - - - O -
+    - - - - O - -
+    - - - O - - -
+    - - O - - - -
+    - - - - - - -
+    */
+    b.r_board = 0x0000000000000000;
+    b.y_board = 0x0000000020820800;
+    assert(calc_winning_rule(pb) == (-1)*(winning_rule_magic_score));
+    
+    /*
+    - - - - - - -
+    - - - - - - -
+    - - - X - - -
+    - - - - X - -
+    - - - - - X -
+    - - - - - - X
+    */
+    b.r_board = 0x0000000001010101;
+    b.y_board = 0x0000000000000000;
+    assert(calc_winning_rule(pb) == (1)*(winning_rule_magic_score));
+    
+    /*
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - O O O O
+    - - - - - - -
+    - - - - - - -
+    */
+    b.r_board = 0x0000000000000000;
+    b.y_board = 0x000000000003C000;
+    assert(calc_winning_rule(pb) == (-1)*(winning_rule_magic_score));
 }
 
 extern bool is_game_over(c4_bitboard* board, player* p);
@@ -392,5 +455,6 @@ void run_tests()
     test_rule_of_2();
     test_rule_of_3();
     test_rule_of_center();
+    test_winning_rule();
     test_is_game_over();
 }
