@@ -130,14 +130,14 @@ void get_child_boards(c4_bitboard* board, c4_bitboard* children, piece p, uint8_
         return;
     }
 
-    for (int i = 0; i < BOARD_WIDTH; i++)
+    for (int col = 1; col <= BOARD_WIDTH; col++)
     {
-        full_col = GET_COL(board->r_board, i) | GET_COL(board->y_board, i);
+        full_col = GET_COL(board->r_board, col) | GET_COL(board->y_board, col);
         
-        if (BIT_COUNT(full_col) != BOARD_HEIGHT)    // still room for a piece in this column
+        if (BIT_COUNT(full_col) < BOARD_HEIGHT)    // still room for a piece in this column
         {
             children[child_index] = *board;
-            add_piece(&children[child_index], i, p);
+            add_piece(&children[child_index], col, p);
             child_index++;
         }
     }

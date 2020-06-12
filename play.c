@@ -80,7 +80,7 @@ void play()
     c4_bitboard board = {0};
     piece p = RED;
     player winner = EMPTY;
-    bool machine_to_play = true;
+    bool machine_to_play = false;
     node_result machine_move = {0};
     uint8_t human_move = -1;
 
@@ -89,8 +89,9 @@ void play()
     {
         if (machine_to_play)
         {
-            machine_move = minimax(&board, 10, p, true);
+            machine_move = minimax(&board, 8, p, false);
             make_machine_move(&board, machine_move.child_index, p);
+            printf("machine-eval: %d\n", machine_move.eval);
         }
         else
         {

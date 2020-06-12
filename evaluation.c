@@ -158,7 +158,7 @@ score_t calc_rule_of_center(c4_bitboard* board)
     return score;
 }
 
-int16_t winning_rule_magic_score = 50;
+int16_t winning_rule_magic_score = 100;
 score_t calc_winning_rule(c4_bitboard* board)
 {
     piece winner;
