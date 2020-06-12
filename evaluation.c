@@ -140,8 +140,44 @@ int16_t calc_rule_of_3(c4_bitboard* board)
     return calc_rule_of_x(board, 3, rule_of_3_magic_score);
 }
 
+int8_t rule_of_center_magic_score = 1;
+int16_t calc_rule_of_center(c4_bitboard* board)
+{
+    int16_t score = 0;
+    const center_col = 4;
+
+
+    for (int row = 1; row <= BOARD_HEIGHT; row++)
+    {
+        if (get_piece(board, row, center_col) == RED) 
+            score += rule_of_center_magic_score;
+        else if (get_piece(board, row, center_col) == YELLOW)
+            score -= rule_of_center_magic_score;
+    }
+
+    return score;
+}
+
+int16_t winning_rule_magic_score = 50;
+int16_t calc_winning_rule(c4_bitboard* board)
+{
+    piece winner;
+    
+
+    is_game_over(board, &winner);
+
+    if (winner == RED)
+        return winning_rule_magic_score;
+    if (winner == YELLOW)
+        return -winning_rule_magic_score;
+
+    return 0;
+}
+
 int16_t static_eval(c4_bitboard* board)
 {
-    return  calc_rule_of_2(board) +
-            calc_rule_of_3(board);
+    return  calc_rule_of_center(board)  +
+            calc_rule_of_2(board)       +
+            calc_rule_of_3(board)       +
+            calc_winning_rule(board);
 }

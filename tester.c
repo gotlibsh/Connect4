@@ -14,6 +14,29 @@ void _assert(bool expression, char* file, uint32_t line)
 #define assert(expression)      (_assert(!!(expression), __FILE__, __LINE__))
 
 
+void test_bit_count()
+{
+    uint64_t i = 0x0;
+    
+    
+    assert(BIT_COUNT(i) == 0);
+
+    i = 0xFFFFFFFFFFFFFFFF;
+    assert(BIT_COUNT(i) == 64);
+
+    i = 0xFFFFFFFF00000000;
+    assert(BIT_COUNT(i) == 32);
+    
+    i = 0x00000000AAAAAAAA;
+    assert(BIT_COUNT(i) == 16);
+    
+    i = 0xFFFF0000FFFF0000;
+    assert(BIT_COUNT(i) == 32);
+    
+    i = 0x0123456789ABCDEF;
+    assert(BIT_COUNT(i) == 32);
+}
+
 void test_get_piece()
 {
     c4_bitboard b = {0};
@@ -214,11 +237,56 @@ void test_rule_of_3()
     assert(calc_rule_of_3(pb) == (2-1)*(rule_of_3_magic_score));
 }
 
-extern bool is_game_over(c4_bitboard* board);
+extern int16_t calc_rule_of_center(c4_bitboard* board);
+void test_rule_of_center()
+{
+    c4_bitboard b = {0};
+    c4_bitboard* pb = &b;
+    extern int8_t rule_of_center_magic_score;
+
+    /*
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - X - - -
+    */
+    b.r_board = 0x0000000000000008;
+    b.y_board = 0x0000000000000000;
+    assert(calc_rule_of_center(pb) == (1)*(rule_of_center_magic_score));
+    
+    /*
+    - - - - - - -
+    - - - - - - -
+    - - - X - - -
+    - - - O - - -
+    - - - O - - -
+    - - - O - - -
+    */
+    b.r_board = 0x0000000001000000;
+    b.y_board = 0x0000000000020408;
+    assert(calc_rule_of_center(pb) == (1 - 3)*(rule_of_center_magic_score));
+    
+    /*
+    - - - O - - -
+    - - - X - - -
+    - - - O - - -
+    - - - X - - -
+    - - - O - - -
+    - - - X - - -
+    */
+    b.r_board = 0x0000000080020008;
+    b.y_board = 0x0000004001000400;
+    assert(calc_rule_of_center(pb) == 0);
+}
+
+extern bool is_game_over(c4_bitboard* board, player* p);
 void test_is_game_over()
 {
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
+    player p, *pp = &p;
 
     /*
     - - - - - - -
@@ -228,7 +296,7 @@ void test_is_game_over()
     - - - - - - -
     - - - - - - -
     */
-    assert(is_game_over(pb) == false);
+    assert(is_game_over(pb, pp) == false);
 
     /*
     X X X X X X X
@@ -240,7 +308,7 @@ void test_is_game_over()
     */
     b.r_board = 0xFFFFFFFFFFFFFFFF;
     b.y_board = 0x0000000000000000;
-    assert(is_game_over(pb) == true);
+    assert(is_game_over(pb, pp) == true);
 
     /*
     X X X X X X X
@@ -252,7 +320,7 @@ void test_is_game_over()
     */
     b.r_board = 0x000003FFFFE00000;
     b.y_board = 0x00000000001FFFFF;
-    assert(is_game_over(pb) == true);
+    assert(is_game_over(pb, pp) == true);
 
     /*
     - - - - - - -
@@ -264,7 +332,7 @@ void test_is_game_over()
     */
     b.r_board = 0x0000000000000078;
     b.y_board = 0x0000000000000000;
-    assert(is_game_over(pb) == true);
+    assert(is_game_over(pb, pp) == true);
 
     /*
     - - - - - - -
@@ -276,7 +344,7 @@ void test_is_game_over()
     */
     b.r_board = 0x0000000000000000;
     b.y_board = 0x0000000040810200;
-    assert(is_game_over(pb) == true);
+    assert(is_game_over(pb, pp) == true);
 
     /*
     - - - - - - -
@@ -288,7 +356,7 @@ void test_is_game_over()
     */
     b.r_board = 0x0000000002020202;
     b.y_board = 0x0000000000000000;
-    assert(is_game_over(pb) == true);
+    assert(is_game_over(pb, pp) == true);
     
     /*
     - - - - - - -
@@ -300,7 +368,7 @@ void test_is_game_over()
     */
     b.r_board = 0x0000000000000000;
     b.y_board = 0x0000000000208208;
-    assert(is_game_over(pb) == true);
+    assert(is_game_over(pb, pp) == true);
     
     /*
     O O O - - - X
@@ -312,15 +380,17 @@ void test_is_game_over()
     */
     b.r_board = 0x0000000F00820B80;
     b.y_board = 0x0000038041040047;
-    assert(is_game_over(pb) == false);
+    assert(is_game_over(pb, pp) == false);
 }
 
 void run_tests()
 {
+    test_bit_count();
     test_get_piece();
     test_set_piece();
     test_add_piece();
     test_rule_of_2();
     test_rule_of_3();
+    test_rule_of_center();
     test_is_game_over();
 }
