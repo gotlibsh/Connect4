@@ -1,0 +1,20 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    name: build_project_and_run_tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: configure
+        uses: actions/checkout@v2
+      - name: cmake
+        run: cmake .
+      - name: make
+        run: make
+      - name: test
+        run: ./Connect4 test
