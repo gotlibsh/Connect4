@@ -1,3 +1,6 @@
+#ifndef _C4_UTILS_H_
+#define _C4_UTILS_H_
+
 #include <stdint.h>
 
 
@@ -66,3 +69,5 @@ typedef struct _c4_bitboard
 
 
 int16_t calc_rule_of_2(c4_bitboard* board);
+
+#endif
