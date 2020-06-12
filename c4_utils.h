@@ -25,7 +25,13 @@ typedef uint8_t                     bool;
 #define BOARD_HEIGHT                (6)
 #define BOARD_SIZE                  (BOARD_WIDTH * BOARD_HEIGHT)
 #define BOARD_MASK                  (0x000003FFFFFFFFFF)    // lower 42 bits
+#define CLEAN_BOARD(brd)            { brd.r_board = 0x0; brd.y_board = 0x0; }
+#define GET_BIT(brd, r, c)          ((brd) & (1ULL << (BOARD_SIZE - (((row-1) * BOARD_WIDTH) + col))))
+#define SET_BIT(brd, r, c)          ((brd) |= (1ULL << (BOARD_SIZE - (((row-1) * BOARD_WIDTH) + col))))
 #define IS_BOARD_FULL(y, r)         (((y) | (r)) == BOARD_MASK)
+
+#define STR_PIECE(p)                (((p) == RED) ? "X" : ((p) == YELLOW) ? "O" : "-")
+
 #define SEQ_LEN                     (4)
 #define HRZ_SEQ_MASK                (0x000000000000000F)
 #define VRT_SEQ_MASK                (0x0000000000204081)
@@ -67,7 +73,16 @@ typedef struct _c4_bitboard
     uint64_t r_board;
 } c4_bitboard;
 
+typedef enum _piece
+{
+    RED     = 0,
+    YELLOW  = 1,
+    EMPTY   = 2
+} piece;
 
-int16_t calc_rule_of_2(c4_bitboard* board);
+void  set_piece(c4_bitboard* board, uint8_t row, uint8_t col, piece p);
+piece get_piece(c4_bitboard* board, uint8_t row, uint8_t col);
+
+void print_board(c4_bitboard* board);
 
 #endif
