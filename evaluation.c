@@ -2,9 +2,9 @@
 #include "evaluation.h"
 
 
-int16_t calc_rule_of_x(c4_bitboard* board, uint8_t x, uint16_t magic_score)
+score_t calc_rule_of_x(c4_bitboard* board, uint8_t x, uint16_t magic_score)
 {
-    int16_t score = 0;
+    score_t score = 0;
     uint64_t r_seq, y_seq;
     bool is_r_seq, is_y_seq;
 
@@ -129,21 +129,21 @@ int16_t calc_rule_of_x(c4_bitboard* board, uint8_t x, uint16_t magic_score)
 }
 
 int8_t rule_of_2_magic_score = 2;
-int16_t calc_rule_of_2(c4_bitboard* board)
+score_t calc_rule_of_2(c4_bitboard* board)
 {
     return calc_rule_of_x(board, 2, rule_of_2_magic_score);
 }
 
 int8_t rule_of_3_magic_score = 4;
-int16_t calc_rule_of_3(c4_bitboard* board)
+score_t calc_rule_of_3(c4_bitboard* board)
 {
     return calc_rule_of_x(board, 3, rule_of_3_magic_score);
 }
 
 int8_t rule_of_center_magic_score = 1;
-int16_t calc_rule_of_center(c4_bitboard* board)
+score_t calc_rule_of_center(c4_bitboard* board)
 {
-    int16_t score = 0;
+    score_t score = 0;
     const center_col = 4;
 
 
@@ -159,7 +159,7 @@ int16_t calc_rule_of_center(c4_bitboard* board)
 }
 
 int16_t winning_rule_magic_score = 50;
-int16_t calc_winning_rule(c4_bitboard* board)
+score_t calc_winning_rule(c4_bitboard* board)
 {
     piece winner;
     
@@ -174,7 +174,7 @@ int16_t calc_winning_rule(c4_bitboard* board)
     return 0;
 }
 
-int16_t static_eval(c4_bitboard* board)
+score_t static_evaluation(c4_bitboard* board)
 {
     return  calc_rule_of_center(board)  +
             calc_rule_of_2(board)       +

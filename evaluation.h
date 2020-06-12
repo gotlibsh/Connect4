@@ -3,6 +3,6 @@
 
 #include "c4_utils.h"
 
-int16_t static_eval(c4_bitboard* board);
+score_t static_evaluation(c4_bitboard* board);
 
 #endif
