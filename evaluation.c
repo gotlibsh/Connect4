@@ -144,7 +144,7 @@ int8_t rule_of_center_magic_score = 1;
 score_t calc_rule_of_center(c4_bitboard* board)
 {
     score_t score = 0;
-    const center_col = 4;
+    const uint8_t center_col = 4;
 
 
     for (int row = 1; row <= BOARD_HEIGHT; row++)
