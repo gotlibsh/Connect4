@@ -6,9 +6,29 @@
 extern void run_tests();
 extern void play();
 
-int main()
+int main(int argc, char* argv[])
 {
-    play();
+    if (argc > 2)
+    {
+        printf("usage: %s [test]", argv[0]);
+        return 1;
+    }
+    if (argc == 2)
+    {
+        if (strcmp(argv[1], "test") == 0)
+        {
+            run_tests();
+            printf("Test Passed");
+            return 0;
+        }
+        else
+        {
+            printf("usage: %s [test]", argv[0]);
+            return 1;
+        }
+    }
 
+    play();
+    
     return 0;
 }
