@@ -33,6 +33,68 @@ void add_piece(c4_bitboard* board, uint8_t col, piece p)
     set_piece(board, row, col, p);
 }
 
+bool is_game_over(c4_bitboard* board)
+{
+    if (IS_BOARD_FULL(board->r_board, board->y_board))
+    {
+        return true;
+    }
+
+    // looking for winning sequences horizontally
+    for (int row = 1; row <= BOARD_HEIGHT; row++)
+    {
+        for (int col = 1; col <= BOARD_WIDTH - (SEQ_LEN-1); col++)
+        {
+            if (((GET_HRZ_SEQ(board->r_board, row, col) & HRZ_SEQ_MASK) == HRZ_SEQ_MASK) ||
+                ((GET_HRZ_SEQ(board->y_board, row, col) & HRZ_SEQ_MASK) == HRZ_SEQ_MASK))
+            {
+                return true;
+            }
+        }
+    }
+
+    // looking for winning sequences vertically
+    for (int row = 1; row <= BOARD_HEIGHT - (SEQ_LEN-1); row++)
+    {
+        for (int col = 1; col <= BOARD_WIDTH; col++)
+        {
+            if (((GET_VRT_SEQ(board->r_board, row, col) & VRT_SEQ_MASK) == VRT_SEQ_MASK) ||
+                ((GET_VRT_SEQ(board->y_board, row, col) & VRT_SEQ_MASK) == VRT_SEQ_MASK))
+            {
+                return true;
+            }
+        }
+    }
+
+    // looking for winning sequences diagonally
+    for (int row = 1; row <= BOARD_HEIGHT - (SEQ_LEN-1); row++)
+    {
+        for (int col = 1; col <= BOARD_WIDTH - (SEQ_LEN-1); col++)
+        {
+            if (((GET_DGNL_SEQ(board->r_board, row, col) & DGNL_SEQ_MASK) == DGNL_SEQ_MASK) ||
+                ((GET_DGNL_SEQ(board->y_board, row, col) & DGNL_SEQ_MASK) == DGNL_SEQ_MASK))
+            {
+                return true;
+            }
+        }
+    }
+
+    // looking for winning sequences reverse-diagonally
+    for (int row = 1; row <= BOARD_HEIGHT - (SEQ_LEN-1); row++)
+    {
+        for (int col = SEQ_LEN; col <= BOARD_WIDTH; col++)
+        {
+            if (((GET_REV_DGNL_SEQ(board->r_board, row, col) & REV_DGNL_SEQ_MASK) == REV_DGNL_SEQ_MASK) ||
+                ((GET_REV_DGNL_SEQ(board->y_board, row, col) & REV_DGNL_SEQ_MASK) == REV_DGNL_SEQ_MASK))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void print_board(c4_bitboard* board)
 {
     uint8_t row, col;

@@ -28,7 +28,7 @@ typedef uint8_t                     bool;
 #define CLEAN_BOARD(brd)            { brd.r_board = 0x0; brd.y_board = 0x0; }
 #define GET_BIT(brd, r, c)          ((brd) & (1ULL << (BOARD_SIZE - (((row-1) * BOARD_WIDTH) + col))))
 #define SET_BIT(brd, r, c)          ((brd) |= (1ULL << (BOARD_SIZE - (((row-1) * BOARD_WIDTH) + col))))
-#define IS_BOARD_FULL(y, r)         (((y) | (r)) == BOARD_MASK)
+#define IS_BOARD_FULL(r, y)         (((r) | (y)) == BOARD_MASK)
 
 #define STR_PIECE(p)                (((p) == RED) ? "X" : ((p) == YELLOW) ? "O" : "-")
 
@@ -84,8 +84,8 @@ typedef enum _piece
 
 void  set_piece(c4_bitboard* board, uint8_t row, uint8_t col, piece p);
 piece get_piece(c4_bitboard* board, uint8_t row, uint8_t col);
-
 void add_piece(c4_bitboard* board, uint8_t index, piece p);
+bool is_game_over(c4_bitboard* board);
 
 void print_board(c4_bitboard* board);
 

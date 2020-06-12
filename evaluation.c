@@ -2,8 +2,7 @@
 #include "evaluation.h"
 
 
-int8_t rule_of_2_magic_score = 2;
-int16_t calc_rule_of_2(c4_bitboard* board)
+int16_t calc_rule_of_x(c4_bitboard* board, uint8_t x, uint16_t magic_score)
 {
     int16_t score = 0;
     uint64_t r_seq, y_seq;
@@ -24,14 +23,14 @@ int16_t calc_rule_of_2(c4_bitboard* board)
             if (!(is_r_seq || is_y_seq))
                 continue;
 
-            if (is_r_seq && BIT_COUNT(r_seq) == 2)
+            if (is_r_seq && BIT_COUNT(r_seq) == x)
             {
-                score += rule_of_2_magic_score;
+                score += magic_score;
             }
 
-            if (is_y_seq && BIT_COUNT(y_seq) == 2)
+            if (is_y_seq && BIT_COUNT(y_seq) == x)
             {
-                score -= rule_of_2_magic_score;
+                score -= magic_score;
             }
         }
     }
@@ -51,14 +50,14 @@ int16_t calc_rule_of_2(c4_bitboard* board)
                 continue;
 
             // repeating code begin !!!!
-            if (is_r_seq && BIT_COUNT(r_seq) == 2)
+            if (is_r_seq && BIT_COUNT(r_seq) == x)
             {
-                score += rule_of_2_magic_score;
+                score += magic_score;
             }
 
-            if (is_y_seq && BIT_COUNT(y_seq) == 2)
+            if (is_y_seq && BIT_COUNT(y_seq) == x)
             {
-                score -= rule_of_2_magic_score;
+                score -= magic_score;
             }
             // repeating code end !!!!
         }
@@ -82,14 +81,14 @@ int16_t calc_rule_of_2(c4_bitboard* board)
                 continue;
 
             // repeating code begin !!!!
-            if (is_r_seq && BIT_COUNT(r_seq) == 2)
+            if (is_r_seq && BIT_COUNT(r_seq) == x)
             {
-                score += rule_of_2_magic_score;
+                score += magic_score;
             }
 
-            if (is_y_seq && BIT_COUNT(y_seq) == 2)
+            if (is_y_seq && BIT_COUNT(y_seq) == x)
             {
-                score -= rule_of_2_magic_score;
+                score -= magic_score;
             }
             // repeating code end !!!!
         }
@@ -113,14 +112,14 @@ int16_t calc_rule_of_2(c4_bitboard* board)
                 continue;
 
             // repeating code begin !!!!
-            if (is_r_seq && BIT_COUNT(r_seq) == 2)
+            if (is_r_seq && BIT_COUNT(r_seq) == x)
             {
-                score += rule_of_2_magic_score;
+                score += magic_score;
             }
 
-            if (is_y_seq && BIT_COUNT(y_seq) == 2)
+            if (is_y_seq && BIT_COUNT(y_seq) == x)
             {
-                score -= rule_of_2_magic_score;
+                score -= magic_score;
             }
             // repeating code end !!!!
         }
@@ -129,7 +128,20 @@ int16_t calc_rule_of_2(c4_bitboard* board)
     return score;
 }
 
+int8_t rule_of_2_magic_score = 2;
+int16_t calc_rule_of_2(c4_bitboard* board)
+{
+    return calc_rule_of_x(board, 2, rule_of_2_magic_score);
+}
+
+int8_t rule_of_3_magic_score = 4;
+int16_t calc_rule_of_3(c4_bitboard* board)
+{
+    return calc_rule_of_x(board, 3, rule_of_3_magic_score);
+}
+
 int16_t static_eval(c4_bitboard* board)
 {
-    return 0;
+    return  calc_rule_of_2(board) +
+            calc_rule_of_3(board);
 }
