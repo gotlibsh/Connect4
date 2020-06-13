@@ -14,19 +14,7 @@ typedef struct _node_result
 } node_result;
 
 
-void make_machine_move(c4_bitboard* board, uint8_t child_index, piece p)
-{
-    c4_bitboard children[BOARD_WIDTH];
-    uint8_t child_count = 0;
-
-
-    get_child_boards(board, children, p, &child_count);
-    assert(child_count > 0);
-
-    *board = children[child_index];
-}
-
-node_result minimax(c4_bitboard* board, uint8_t depth, piece p, score_t a, score_t b, bool is_maximizer)
+node_result minimax(c4_bitboard* board, uint8_t depth, piece p, score_t alpha, score_t beta, bool is_maximizer)
 {
     node_result result = {0};
     c4_bitboard children[BOARD_WIDTH];
@@ -53,7 +41,7 @@ node_result minimax(c4_bitboard* board, uint8_t depth, piece p, score_t a, score
 
     for (int i = 0; i < child_count; i++)
     {
-        result = minimax(&children[i], depth - 1, OPP_PIECE(p), a, b, !is_maximizer);
+        result = minimax(&children[i], depth - 1, OPP_PIECE(p), alpha, beta, !is_maximizer);
 
         if (is_maximizer)
         {
@@ -63,9 +51,9 @@ node_result minimax(c4_bitboard* board, uint8_t depth, piece p, score_t a, score
                 index_of_peak = i;
             }
 
-            a = MAX(a, peak_eval);
+            alpha = MAX(alpha, peak_eval);
 
-            if (a >= b)
+            if (alpha >= beta)
             {
                 break;
             }
@@ -78,9 +66,9 @@ node_result minimax(c4_bitboard* board, uint8_t depth, piece p, score_t a, score
                 index_of_peak = i;
             }
 
-            b = MIN(b, peak_eval);
+            beta = MIN(beta, peak_eval);
 
-            if (b <= a)
+            if (beta <= alpha)
             {
                 break;
             }
@@ -93,30 +81,61 @@ node_result minimax(c4_bitboard* board, uint8_t depth, piece p, score_t a, score
     return result;
 }
 
+void make_human_move(c4_bitboard* board, piece p)
+{
+    uint8_t human_move = -1;
+
+    printf("enter column index (1-7): ");
+    scanf("%hhd", &human_move);
+
+    while(!is_legal_move(board, human_move))
+    {
+        printf("illegal move!\n");
+        printf("enter column index (1-7): ");
+        scanf("%hhd", &human_move);
+    }
+    
+    add_piece(board, human_move, p);
+}
+
+void make_machine_move(c4_bitboard* board, piece p, uint8_t depth)
+{
+    node_result machine_move = {0};
+    c4_bitboard children[BOARD_WIDTH];
+    uint8_t child_count = 0;
+    bool is_maximizer = (p == RED);
+
+
+    assert(p != EMPTY);
+    machine_move = minimax(board, depth, p, MIN_SCORE, MAX_SCORE, is_maximizer);
+    printf("machine-eval: %d\n", machine_move.eval);
+
+    get_child_boards(board, children, p, &child_count);
+    assert(child_count > 0);
+
+    *board = children[machine_move.child_index];
+}
+
 void play()
 {
     c4_bitboard board = {0};
     piece p = RED;
     player winner = EMPTY;
-    bool machine_to_play = false;
+    bool machine_to_play = true;
     node_result machine_move = {0};
     uint8_t human_move = -1;
-    uint8_t depth = 11;
+    uint8_t depth = 12;
 
 
     while(!is_game_over(&board, &winner))
     {
         if (machine_to_play)
         {
-            machine_move = minimax(&board, depth, p, MIN_SCORE, MAX_SCORE, false);
-            make_machine_move(&board, machine_move.child_index, p);
-            printf("machine-eval: %d\n", machine_move.eval);
+            make_machine_move(&board, p, depth);
         }
         else
         {
-            printf("enter column index (1-7): ");
-            scanf("%hhd", &human_move);
-            add_piece(&board, human_move, p);
+            make_human_move(&board, p);
         }
 
         print_board(&board);
@@ -126,5 +145,10 @@ void play()
         machine_to_play = !machine_to_play;
     }
 
-    printf("Game Over!");
+    printf("Game Over!\n");
+
+    if (winner != EMPTY)
+        printf("Player %s won!\n", STR_PIECE(winner));
+    else
+        printf("Draw!");
 }
