@@ -117,6 +117,15 @@ bool is_game_over(c4_bitboard* board, player* p)
     return false;
 }
 
+bool is_legal_move(c4_bitboard* board, uint8_t col)
+{
+    uint64_t full_col;
+
+
+    full_col = GET_COL(board->r_board, col) | GET_COL(board->y_board, col);
+    return (BIT_COUNT(full_col) < BOARD_HEIGHT);
+}
+
 void get_child_boards(c4_bitboard* board, c4_bitboard* children, piece p, uint8_t* child_count)
 {
     int child_index = 0;
