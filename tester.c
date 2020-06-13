@@ -446,6 +446,66 @@ void test_is_game_over()
     assert(is_game_over(pb, pp) == false);
 }
 
+extern void get_child_boards(c4_bitboard* board, c4_bitboard* children, piece p, uint8_t* child_count);
+void test_get_child_boards()
+{
+#define assert_boards_eq(brd, r, y)     (assert(((brd).r_board == r) && ((brd).y_board == y)))
+    c4_bitboard b = {0};
+    c4_bitboard* pb = &b;
+    c4_bitboard children[BOARD_WIDTH];
+    uint8_t child_count = 0;
+
+
+    /*
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    */
+    get_child_boards(pb, children, RED, &child_count);
+    assert(child_count == BOARD_WIDTH);
+    assert_boards_eq(children[0], 0x0000000000000040, 0x0000000000000000);
+    assert_boards_eq(children[1], 0x0000000000000020, 0x0000000000000000);
+    assert_boards_eq(children[2], 0x0000000000000010, 0x0000000000000000);
+    assert_boards_eq(children[3], 0x0000000000000008, 0x0000000000000000);
+    assert_boards_eq(children[4], 0x0000000000000004, 0x0000000000000000);
+    assert_boards_eq(children[5], 0x0000000000000002, 0x0000000000000000);
+    assert_boards_eq(children[6], 0x0000000000000001, 0x0000000000000000);
+
+    /*
+    - - - - - X O
+    - - - O X O X
+    - - - O X O X
+    - - X O X O X
+    - X O X O X O
+    X O X O X O X
+    */
+    b.r_board = 0x0000001050A55555;
+    b.y_board = 0x00000008A1428AAA;
+    get_child_boards(pb, children, YELLOW, &child_count);
+    assert(child_count == 5);
+    assert_boards_eq(children[0], 0x0000001050A55555, 0x00000008A142AAAA);
+    assert_boards_eq(children[1], 0x0000001050A55555, 0x00000008A14A8AAA);
+    assert_boards_eq(children[2], 0x0000001050A55555, 0x00000008A3428AAA);
+    assert_boards_eq(children[3], 0x0000001050A55555, 0x00000048A1428AAA);
+    assert_boards_eq(children[4], 0x0000001050A55555, 0x00000028A1428AAA);
+
+    /*
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    - - - - - - -
+    X X X X O O O
+    */
+    b.r_board = 0x0000000000000078;
+    b.y_board = 0x0000000000000007;
+    get_child_boards(pb, children, RED, &child_count);
+    assert(child_count == 0);
+}
+
 void run_tests()
 {
     test_bit_count();
@@ -457,4 +517,5 @@ void run_tests()
     test_rule_of_center();
     test_winning_rule();
     test_is_game_over();
+    test_get_child_boards();
 }

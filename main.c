@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
         if (strcmp(argv[1], "test") == 0)
         {
             run_tests();
-            printf("Test Passed");
+            printf("Tests Passed");
             return 0;
         }
         else
