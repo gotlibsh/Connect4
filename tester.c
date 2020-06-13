@@ -290,7 +290,7 @@ void test_winning_rule()
 {
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
-    extern int8_t winning_rule_magic_score;
+    extern int16_t winning_rule_magic_score;
 
 
     assert(calc_winning_rule(pb) == 0);
