@@ -4,11 +4,15 @@
 #include "evaluation.h"
 
 
+#define MAX(a,b)                    ((a) > (b) ? a : b)
+#define MIN(a,b)                    ((a) < (b) ? a : b)
+
 typedef struct _node_result
 {
     uint8_t child_index;
     score_t eval;
 } node_result;
+
 
 void make_machine_move(c4_bitboard* board, uint8_t child_index, piece p)
 {
@@ -22,7 +26,7 @@ void make_machine_move(c4_bitboard* board, uint8_t child_index, piece p)
     *board = children[child_index];
 }
 
-node_result minimax(c4_bitboard* board, uint8_t depth, piece p, bool is_maximizer)
+node_result minimax(c4_bitboard* board, uint8_t depth, piece p, score_t a, score_t b, bool is_maximizer)
 {
     node_result result = {0};
     c4_bitboard children[BOARD_WIDTH];
@@ -49,7 +53,7 @@ node_result minimax(c4_bitboard* board, uint8_t depth, piece p, bool is_maximize
 
     for (int i = 0; i < child_count; i++)
     {
-        result = minimax(&children[i], depth - 1, OPP_PIECE(p), !is_maximizer);
+        result = minimax(&children[i], depth - 1, OPP_PIECE(p), a, b, !is_maximizer);
 
         if (is_maximizer)
         {
@@ -58,6 +62,13 @@ node_result minimax(c4_bitboard* board, uint8_t depth, piece p, bool is_maximize
                 peak_eval = result.eval;
                 index_of_peak = i;
             }
+
+            a = MAX(a, peak_eval);
+
+            if (a >= b)
+            {
+                break;
+            }
         }
         else
         {
@@ -65,6 +76,13 @@ node_result minimax(c4_bitboard* board, uint8_t depth, piece p, bool is_maximize
             {
                 peak_eval = result.eval;
                 index_of_peak = i;
+            }
+
+            b = MIN(b, peak_eval);
+
+            if (b <= a)
+            {
+                break;
             }
         }
     }
@@ -83,14 +101,14 @@ void play()
     bool machine_to_play = false;
     node_result machine_move = {0};
     uint8_t human_move = -1;
-    uint8_t depth = 8;
+    uint8_t depth = 11;
 
 
     while(!is_game_over(&board, &winner))
     {
         if (machine_to_play)
         {
-            machine_move = minimax(&board, depth, p, false);
+            machine_move = minimax(&board, depth, p, MIN_SCORE, MAX_SCORE, false);
             make_machine_move(&board, machine_move.child_index, p);
             printf("machine-eval: %d\n", machine_move.eval);
         }
