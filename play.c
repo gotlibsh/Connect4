@@ -122,8 +122,6 @@ void play()
     piece p = RED;
     player winner = EMPTY;
     bool machine_to_play = true;
-    node_result machine_move = {0};
-    uint8_t human_move = -1;
     uint8_t depth = 12;
 
 
