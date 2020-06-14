@@ -26,8 +26,8 @@ typedef uint8_t                     bool;
 #define BOARD_SIZE                  (BOARD_WIDTH * BOARD_HEIGHT)
 #define BOARD_MASK                  (0x000003FFFFFFFFFF)    // lower 42 bits
 #define CLEAN_BOARD(brd)            { brd.r_board = 0x0; brd.y_board = 0x0; }
-#define GET_BIT(brd, r, c)          ((brd) & (1ULL << (BOARD_SIZE - (((row-1) * BOARD_WIDTH) + col))))
-#define SET_BIT(brd, r, c)          ((brd) |= (1ULL << (BOARD_SIZE - (((row-1) * BOARD_WIDTH) + col))))
+#define GET_BIT(brd, r, c)          ((brd) & (1ULL << (BOARD_SIZE - (((r-1) * BOARD_WIDTH) + c))))
+#define SET_BIT(brd, r, c)          ((brd) |= (1ULL << (BOARD_SIZE - (((r-1) * BOARD_WIDTH) + c))))
 #define IS_BOARD_FULL(r, y)         (((r) | (y)) == BOARD_MASK)
 
 #define STR_PIECE(p)                (((p) == RED) ? "X" : ((p) == YELLOW) ? "O" : "-")
