@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 {
     if (argc > 2)
     {
-        printf("usage: %s [test]", argv[0]);
+        printf("usage: %s [test]\n", argv[0]);
         return 1;
     }
     if (argc == 2)
@@ -18,12 +18,12 @@ int main(int argc, char* argv[])
         if (strcmp(argv[1], "test") == 0)
         {
             run_tests();
-            printf("Tests Passed");
+            printf("Tests Passed\n");
             return 0;
         }
         else
         {
-            printf("usage: %s [test]", argv[0]);
+            printf("usage: %s [test]\n", argv[0]);
             return 1;
         }
     }
