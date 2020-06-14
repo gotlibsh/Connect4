@@ -143,19 +143,10 @@ score_t calc_rule_of_3(c4_bitboard* board)
 int8_t rule_of_center_magic_score = 1;
 score_t calc_rule_of_center(c4_bitboard* board)
 {
-    score_t score = 0;
-    const uint8_t center_col = 4;
+    uint64_t r_center = GET_COL(board->r_board, 4);
+    uint64_t y_center = GET_COL(board->y_board, 4);
 
-
-    for (int row = 1; row <= BOARD_HEIGHT; row++)
-    {
-        if (get_piece(board, row, center_col) == RED) 
-            score += rule_of_center_magic_score;
-        else if (get_piece(board, row, center_col) == YELLOW)
-            score -= rule_of_center_magic_score;
-    }
-
-    return score;
+    return (BIT_COUNT(r_center) - BIT_COUNT(y_center))*(rule_of_center_magic_score);
 }
 
 int16_t winning_rule_magic_score = 1000;
