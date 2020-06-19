@@ -83,19 +83,20 @@ node_result minimax(c4_bitboard* board, uint8_t depth, piece p, score_t alpha, s
 
 void make_human_move(c4_bitboard* board, piece p)
 {
-    uint8_t human_move = -1;
+    int64_t human_move = -1;
+
 
     printf("enter column index (1-7): ");
-    scanf("%hhd", &human_move);
+    scanf("%lld", &human_move);
 
     while(!is_legal_move(board, human_move))
     {
         printf("illegal move!\n");
         printf("enter column index (1-7): ");
-        scanf("%hhd", &human_move);
+        scanf("%lld", &human_move);
     }
     
-    add_piece(board, human_move, p);
+    add_piece(board, (uint8_t)human_move, p);
 }
 
 void make_machine_move(c4_bitboard* board, piece p, uint8_t depth)
@@ -121,8 +122,8 @@ void play()
     c4_bitboard board = {0};
     piece p = RED;
     player winner = EMPTY;
-    bool machine_to_play = true;
-    uint8_t depth = 12;
+    bool machine_to_play = false;
+    uint8_t depth = 10;
 
 
     while(!is_game_over(&board, &winner))
@@ -149,4 +150,35 @@ void play()
         printf("Player %s won!\n", STR_PIECE(winner));
     else
         printf("Draw!");
+}
+
+void util(char* cmd)
+{
+    c4_bitboard board = {0};
+    c4_bitboard children[BOARD_WIDTH];
+    uint8_t depth = 0;
+    piece p = EMPTY;
+    uint8_t child_count = 0;
+    node_result result = {0};
+    player winner;
+    bool over;
+
+
+    scanf("%llx", &board.r_board);
+    scanf("%llx", &board.y_board);
+
+    if (strcmp(cmd, "over") == 0)
+    {
+        over = is_game_over(&board, &winner);
+        printf("%d %d\n", over, winner);
+    }
+    else if(strcmp(cmd, "eval") == 0)
+    {
+        scanf("%hhd", &depth);  // get required depth
+        scanf("%d", &p);        // get piece to put next
+
+        result = minimax(&board, depth, p, MIN_SCORE, MAX_SCORE, (p == RED));
+        get_child_boards(&board, children, p, &child_count);
+        printf("0x%016llx 0x%016llx %d\n", children[result.child_index].r_board, children[result.child_index].y_board, result.eval);
+    }
 }

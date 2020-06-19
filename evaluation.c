@@ -140,7 +140,7 @@ score_t calc_rule_of_3(c4_bitboard* board)
     return calc_rule_of_x(board, 3, rule_of_3_magic_score);
 }
 
-int8_t rule_of_center_magic_score = 1;
+int8_t rule_of_center_magic_score = 2;
 score_t calc_rule_of_center(c4_bitboard* board)
 {
     uint64_t r_center = GET_COL(board->r_board, 4);

@@ -117,7 +117,7 @@ bool is_game_over(c4_bitboard* board, player* p)
     return false;
 }
 
-bool is_legal_move(c4_bitboard* board, int8_t col)
+bool is_legal_move(c4_bitboard* board, int64_t col)
 {
     uint64_t full_col;
 
