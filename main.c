@@ -3,9 +3,17 @@
 #include "c4_utils.h"
 
 
-void print_usage(char* program_name)
+void print_usage()
 {
-    printf("Usage: %s {play|util|test}\n", program_name);
+    printf("Usage: Connect4 [options]\n");
+    printf("Options:\n");
+    printf("      play [<machine|human> [depth=N]]     play against the machine and specify the starting player\n");
+    printf("                                           and the machine's depth search\n");
+    printf("      util <eval|isover>                   eval - evaluates a given position and returns a bit-board with the new move along with the evaluation\n");
+    printf("                                                 this command reads from standrad input the folllowing: <red_bitboard> <yellow_bitboard> <depth> <piece>\n");
+    printf("                                           isover - evaluates a given position whether it's game over and determines the winner\n");
+    printf("                                                 this command reads from standrad input the folllowing: <red_bitboard> <yellow_bitboard>\n");
+    printf("      test                                 run all built-in tests\n");
 }
 
 extern void run_tests();
@@ -16,14 +24,14 @@ int main(int argc, char* argv[])
 {
     if (argc < 2)
     {
-        print_usage(argv[0]);
+        print_usage();
         return 1;
     }
     if (strcmp(argv[1], "play") == 0)
     {
         if (!play(argc-2, &argv[2]))
         {
-            print_usage(argv[0]);
+            print_usage();
             return 1;
         }
         return 0;
@@ -32,7 +40,7 @@ int main(int argc, char* argv[])
     {
         if (!util(argc-2, &argv[2]))
         {
-            print_usage(argv[0]);
+            print_usage();
             return 1;
         }
         return 0;
@@ -44,6 +52,6 @@ int main(int argc, char* argv[])
         return 0;
     }
     
-    print_usage(argv[1]);
+    print_usage();
     return 1;
 }
