@@ -117,7 +117,7 @@ hash_table_t* ht_create(size_t size)
         return NULL;
     }
 
-    ht->buckets = malloc(size * sizeof(bucket_t));
+    ht->buckets = (bucket_t*)malloc(size * sizeof(bucket_t));
 
     if (ht->buckets == NULL)
     {
@@ -249,6 +249,8 @@ void ht_free(hash_table_t* ht)
     }
 
     free(ht->buckets);
+    ht->buckets = NULL;
+    ht->size = 0;
     free(ht);
 }
 
