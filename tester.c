@@ -92,7 +92,7 @@ void test_set_piece()
     assert(b.y_board == 0x0000004104100001);
 }
 
-void test_add_piece()
+void test_drop_piece()
 {
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
@@ -106,22 +106,22 @@ void test_add_piece()
     - - - O X - O
     X X O X O - X
     */
-    add_piece(pb, 1, RED);
-    add_piece(pb, 2, RED);
-    add_piece(pb, 3, YELLOW);
-    add_piece(pb, 4, RED);
-    add_piece(pb, 4, YELLOW);
-    add_piece(pb, 4, YELLOW);
-    add_piece(pb, 4, RED);
-    add_piece(pb, 4, YELLOW);
-    add_piece(pb, 5, YELLOW);
-    add_piece(pb, 5, RED);
-    add_piece(pb, 5, RED);
-    add_piece(pb, 5, RED);
-    add_piece(pb, 5, YELLOW);
-    add_piece(pb, 7, RED);
-    add_piece(pb, 7, YELLOW);
-    add_piece(pb, 7, YELLOW);
+    drop_piece(pb, 1, RED);
+    drop_piece(pb, 2, RED);
+    drop_piece(pb, 3, YELLOW);
+    drop_piece(pb, 4, RED);
+    drop_piece(pb, 4, YELLOW);
+    drop_piece(pb, 4, YELLOW);
+    drop_piece(pb, 4, RED);
+    drop_piece(pb, 4, YELLOW);
+    drop_piece(pb, 5, YELLOW);
+    drop_piece(pb, 5, RED);
+    drop_piece(pb, 5, RED);
+    drop_piece(pb, 5, RED);
+    drop_piece(pb, 5, YELLOW);
+    drop_piece(pb, 7, RED);
+    drop_piece(pb, 7, YELLOW);
+    drop_piece(pb, 7, YELLOW);
     assert(b.r_board == 0x0000000001810269);
     assert(b.y_board == 0x00000000C0024494);
 }
@@ -511,7 +511,7 @@ void run_tests()
     test_bit_count();
     test_get_piece();
     test_set_piece();
-    test_add_piece();
+    test_drop_piece();
     test_rule_of_2();
     test_rule_of_3();
     test_rule_of_center();
