@@ -28,6 +28,62 @@ typedef struct _hash_table_t
 
 typedef uint32_t hash_t;
 
+
+hash_t g_zob_table[BOARD_HEIGHT][BOARD_WIDTH][2]; // for Zobrist hashing
+
+uint32_t get_32_bit_random()
+{
+    uint32_t res = 0;
+
+    res |= rand() & 0xff;
+    res |= (rand() & 0xff) << 8;
+    res |= (rand() & 0xff) << 16;
+    res |= (rand() & 0xff) << 24;
+
+    return res;
+}
+
+void initialize_zob_table()
+{
+    hash_t* table = (hash_t*)&g_zob_table[0];
+
+
+    srand((uint32_t)time(NULL));
+
+    for(int i = 0; i < ZOB_TABLE_SIZE; i++)
+    {
+        *(table+i) = get_32_bit_random();
+    }
+
+    // for (int i = 0; i < ZOB_TABLE_SIZE; i++)
+    // {
+    //     printf("0x%08x ", table[i]);
+    // }
+    // printf("\n");
+}
+
+hash_t compute_hash(c4_bitboard* board)
+{
+    hash_t hash = 0;
+    piece p = EMPTY;
+
+
+    for (int row = 1; row <= BOARD_HEIGHT; row++)
+    {
+        for (int col = 1; col <= BOARD_WIDTH; col++)
+        {
+            p = get_piece(board, row, col);
+            
+            if (p != EMPTY)
+            {
+                hash ^= g_zob_table[row-1][col-1][p];
+            }
+        }
+    }
+
+    return hash;
+}
+
 node_t* create_node(c4_bitboard* key, score_t* value)
 {
     node_t* node = malloc(sizeof(node_t));
@@ -228,61 +284,6 @@ void ht_print(hash_table_t* ht)
             printf("\n");
         }
     }
-}
-
-hash_t g_zob_table[BOARD_HEIGHT][BOARD_WIDTH][2]; // for Zobrist hashing
-
-uint32_t get_32_bit_random()
-{
-    uint32_t res = 0;
-
-    res |= rand() & 0xff;
-    res |= (rand() & 0xff) << 8;
-    res |= (rand() & 0xff) << 16;
-    res |= (rand() & 0xff) << 24;
-
-    return res;
-}
-
-void initialize_zob_table()
-{
-    hash_t* table = (hash_t*)&g_zob_table[0];
-
-
-    srand((uint32_t)time(NULL));
-
-    for(int i = 0; i < ZOB_TABLE_SIZE; i++)
-    {
-        *(table+i) = get_32_bit_random();
-    }
-
-    // for (int i = 0; i < ZOB_TABLE_SIZE; i++)
-    // {
-    //     printf("0x%08x ", table[i]);
-    // }
-    // printf("\n");
-}
-
-hash_t compute_hash(c4_bitboard* board)
-{
-    hash_t hash = 0;
-    piece p = EMPTY;
-
-
-    for (int row = 1; row <= BOARD_HEIGHT; row++)
-    {
-        for (int col = 1; col <= BOARD_WIDTH; col++)
-        {
-            p = get_piece(board, row, col);
-            
-            if (p != EMPTY)
-            {
-                hash ^= g_zob_table[row-1][col-1][p];
-            }
-        }
-    }
-
-    return hash;
 }
 
 c4_bitboard generate_random_board()
