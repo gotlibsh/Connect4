@@ -108,6 +108,7 @@ void add_piece(c4_bitboard* board, uint8_t index, piece p);
 bool is_game_over(c4_bitboard* board, player* p);
 bool is_legal_move(c4_bitboard* board, int64_t col);
 void get_child_boards(c4_bitboard* board, c4_bitboard* children, piece p, uint8_t* child_count);
+bool boards_equal(c4_bitboard* b1, c4_bitboard* b2);
 void print_board(c4_bitboard* board);
 
 #endif

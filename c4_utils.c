@@ -159,6 +159,11 @@ void get_child_boards(c4_bitboard* board, c4_bitboard* children, piece p, uint8_
     *child_count = child_index;
 }
 
+bool boards_equal(c4_bitboard* b1, c4_bitboard* b2)
+{
+    return (b1->r_board == b2->r_board) && (b1->y_board == b2->y_board);
+}
+
 void print_board(c4_bitboard* board)
 {
     uint8_t row, col;
