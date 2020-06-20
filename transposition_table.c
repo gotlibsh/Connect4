@@ -259,7 +259,7 @@ void ht_print(hash_table_t* ht)
     node_t* traverse = NULL;
 
 
-    if (ht == NULL || (ht != NULL && ht->size == 0))
+    if (ht == NULL || ht->size == 0)
     {
         return;
     }
