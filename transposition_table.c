@@ -225,18 +225,18 @@ score_t* ht_get(hash_table_t* ht, c4_bitboard* key)
     return result;
 }
 
-void ht_free(hash_table_t* ht)
+void ht_free(hash_table_t** ht)
 {
-    if (ht == NULL)
+    if (ht == NULL || *ht == NULL)
     {
         return;
     }
 
-    for (int i = 0; i < ht->size; i++)
+    for (int i = 0; i < (*ht)->size; i++)
     {
-        if (ht->buckets[i].head != NULL)
+        if ((*ht)->buckets[i].head != NULL)
         {
-            node_t* traverse = ht->buckets[i].head;
+            node_t* traverse = (*ht)->buckets[i].head;
             node_t* temp;
 
             while (traverse != NULL)
@@ -248,10 +248,11 @@ void ht_free(hash_table_t* ht)
         }
     }
 
-    free(ht->buckets);
-    ht->buckets = NULL;
-    ht->size = 0;
-    free(ht);
+    free((*ht)->buckets);
+    (*ht)->buckets = NULL;
+    (*ht)->size = 0;
+    free(*ht);
+    *ht = NULL;
 }
 
 void ht_print(hash_table_t* ht)
@@ -341,8 +342,7 @@ int main()
     }
 
     ht_print(ht);
-    ht_free(ht);
-    // ht = NULL;
+    ht_free(&ht);
     printf("freed\n");
     ht_print(ht);
 }
