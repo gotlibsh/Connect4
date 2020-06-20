@@ -19,7 +19,7 @@ piece get_piece(c4_bitboard* board, uint8_t row, uint8_t col)
     return EMPTY;
 }
 
-void add_piece(c4_bitboard* board, uint8_t col, piece p)
+void drop_piece(c4_bitboard* board, uint8_t col, piece p)
 {
     uint64_t full_col;
     int8_t row;
@@ -28,7 +28,10 @@ void add_piece(c4_bitboard* board, uint8_t col, piece p)
     full_col = GET_COL(board->r_board, col) | GET_COL(board->y_board, col);
     row = BOARD_HEIGHT - (uint8_t)BIT_COUNT(full_col);
 
-    assert(row >= 1);
+    if (row < 1)
+    {
+        return;
+    }
 
     set_piece(board, row, col, p);
 }
@@ -151,7 +154,7 @@ void get_child_boards(c4_bitboard* board, c4_bitboard* children, piece p, uint8_
         if (BIT_COUNT(full_col) < BOARD_HEIGHT)    // still room for a piece in this column
         {
             children[child_index] = *board;
-            add_piece(&children[child_index], col, p);
+            drop_piece(&children[child_index], col, p);
             child_index++;
         }
     }

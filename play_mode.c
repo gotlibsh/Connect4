@@ -21,7 +21,7 @@ void make_human_move(c4_bitboard* board, piece p)
         scanf("%lld", &human_move);
     }
     
-    add_piece(board, (uint8_t)human_move, p);
+    drop_piece(board, (uint8_t)human_move, p);
 }
 
 void make_machine_move(c4_bitboard* board, piece p, uint8_t depth)
