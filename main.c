@@ -10,9 +10,9 @@ void print_usage()
     printf("      play [<machine|human> [depth=N]]     play against the machine and specify the starting player\n");
     printf("                                           and the machine's depth search\n");
     printf("      util <eval|isover>                   eval - evaluates a given position and returns a bit-board with the new move along with the evaluation\n");
-    printf("                                                 this command reads from standrad input the folllowing: <red_bitboard> <yellow_bitboard> <depth> <piece>\n");
+    printf("                                                 this command reads from standard input the following: <red_bitboard> <yellow_bitboard> <depth> <piece>\n");
     printf("                                           isover - evaluates a given position whether it's game over and determines the winner\n");
-    printf("                                                 this command reads from standrad input the folllowing: <red_bitboard> <yellow_bitboard>\n");
+    printf("                                                 this command reads from standard input the following: <red_bitboard> <yellow_bitboard>\n");
     printf("      test                                 run all built-in tests\n");
 }
 
