@@ -20,7 +20,7 @@ extern void run_tests();
 extern bool play(int argc, char* argv[]);
 extern bool util(int argc, char* argv[]);
 
-int main(int argc, char* argv[])
+int main2(int argc, char* argv[])
 {
     if (argc < 2)
     {

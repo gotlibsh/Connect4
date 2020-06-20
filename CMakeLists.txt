@@ -12,4 +12,5 @@ add_executable( Connect4
                 minimax.c
                 play_mode.c
                 util_mode.c
+                transposition_table.c
                 tester.c)
