@@ -300,7 +300,7 @@ c4_bitboard generate_random_board()
     while(num_of_pieces--)
     {
         rand_column = (rand() % BOARD_WIDTH) + 1;
-        add_piece(pb, rand_column, p);
+        drop_piece(pb, rand_column, p);
         p = OPP_PIECE(p);
     }
 
