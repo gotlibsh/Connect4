@@ -2,6 +2,8 @@
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
+#include <math.h>
 #include "c4_utils.h"
 
 
@@ -23,7 +25,8 @@ typedef struct _bucket_t
 typedef struct _hash_table_t
 {
     bucket_t* buckets;
-    size_t size;
+    size_t buckets_count;
+    size_t nodes_count;
 } hash_table_t;
 
 typedef uint32_t hash_t;
@@ -43,6 +46,22 @@ uint32_t get_32_bit_random()
     return res;
 }
 
+uint64_t get_64_bit_random()
+{
+    uint64_t res = 0;
+
+    res |= (uint64_t)rand() & 0xff;
+    res |= (uint64_t)(rand() & 0xff) << 8;
+    res |= (uint64_t)(rand() & 0xff) << 16;
+    res |= (uint64_t)(rand() & 0xff) << 24;
+    res |= (uint64_t)(rand() & 0xff) << 32;
+    res |= (uint64_t)(rand() & 0xff) << 40;
+    res |= (uint64_t)(rand() & 0xff) << 48;
+    res |= (uint64_t)(rand() & 0xff) << 56;
+
+    return res;
+}
+
 void initialize_zob_table()
 {
     hash_t* table = (hash_t*)&g_zob_table[0];
@@ -54,12 +73,6 @@ void initialize_zob_table()
     {
         *(table+i) = get_32_bit_random();
     }
-
-    // for (int i = 0; i < ZOB_TABLE_SIZE; i++)
-    // {
-    //     printf("0x%08x ", table[i]);
-    // }
-    // printf("\n");
 }
 
 hash_t compute_hash(c4_bitboard* board)
@@ -126,7 +139,8 @@ hash_table_t* ht_create(size_t size)
     }
 
     memset(ht->buckets, 0, size * sizeof(bucket_t));
-    ht->size = size;
+    ht->buckets_count = size;
+    ht->nodes_count = 0;
 
     return ht;
 }
@@ -137,13 +151,13 @@ bool ht_put(hash_table_t* ht, c4_bitboard* key, score_t* value)
     int index = 0;
 
 
-    if (ht == NULL || ht->size == 0)
+    if (ht == NULL || ht->buckets_count == 0)
     {
         return false;
     }
 
     hash = compute_hash(key);
-    index = hash % ht->size;
+    index = hash % ht->buckets_count;
 
     if (ht->buckets[index].head == NULL)    // empty bucket
     {
@@ -156,21 +170,21 @@ bool ht_put(hash_table_t* ht, c4_bitboard* key, score_t* value)
 
         ht->buckets[index].head = new_node;
     }
-    else                        // non-empty bucket
+    else                         // non-empty bucket
     {
         node_t* traverse = ht->buckets[index].head;
 
         while (traverse != NULL) // check if the same key is already stored
         {
             if (boards_equal(&traverse->key, key))
-            {                   // same key is stored, override its value
+            {                    // same key is stored, override its value
                 traverse->value = *value;
                 break;
             }
             traverse = traverse->next;
         }
 
-        if (traverse == NULL)   // new key, store at the beginning
+        if (traverse == NULL)    // new key, store at the beginning
         {
             node_t* temp = ht->buckets[index].head;
             node_t* new_node = create_node(key, value);
@@ -185,6 +199,9 @@ bool ht_put(hash_table_t* ht, c4_bitboard* key, score_t* value)
         }
     }
 
+    ht->buckets[index].size++;
+    ht->nodes_count++;
+
     return true;
 }
 
@@ -195,13 +212,13 @@ score_t* ht_get(hash_table_t* ht, c4_bitboard* key)
     int index = 0;
     
     
-    if (ht == NULL || ht->size == 0)
+    if (ht == NULL || ht->buckets_count == 0)
     {
         return NULL;
     }
 
     hash = compute_hash(key);
-    index = hash % ht->size;
+    index = hash % ht->buckets_count;
 
     if (ht->buckets[index].head == NULL)
     {
@@ -232,7 +249,7 @@ void ht_free(hash_table_t** ht)
         return;
     }
 
-    for (int i = 0; i < (*ht)->size; i++)
+    for (int i = 0; i < (*ht)->buckets_count; i++)
     {
         if ((*ht)->buckets[i].head != NULL)
         {
@@ -250,7 +267,8 @@ void ht_free(hash_table_t** ht)
 
     free((*ht)->buckets);
     (*ht)->buckets = NULL;
-    (*ht)->size = 0;
+    (*ht)->buckets_count = 0;
+    (*ht)->nodes_count = 0;
     free(*ht);
     *ht = NULL;
 }
@@ -260,12 +278,12 @@ void ht_print(hash_table_t* ht)
     node_t* traverse = NULL;
 
 
-    if (ht == NULL || ht->size == 0)
+    if (ht == NULL || ht->buckets_count == 0)
     {
         return;
     }
 
-    for (int i = 0; i < ht->size; i++)
+    for (int i = 0; i < ht->buckets_count; i++)
     {
         traverse = ht->buckets[i].head;
         bool empty = true;
@@ -289,6 +307,54 @@ void ht_print(hash_table_t* ht)
     }
 }
 
+void ht_stats(hash_table_t* ht)
+{
+    double avg, var;
+    double temp_sum = 0.0;
+    size_t cnt20 = 0, cnt100 = 0, cnt1000 = 0, max = 0;
+
+    if (ht == NULL || ht->buckets_count == 0)
+    {
+        return;
+    }
+
+    avg = (double)ht->nodes_count / ht->buckets_count;
+
+    for (int i = 0; i < ht->buckets_count; i++)
+    {
+        temp_sum += pow(ht->buckets[i].size - avg, 2);
+
+        if (ht->buckets[i].size > max)
+        {
+            max = ht->buckets[i].size;
+        }
+
+        if (ht->buckets[i].size - avg > 1000)
+        {
+            cnt1000++;
+        }
+        else if (ht->buckets[i].size - avg > 100)
+        {
+            cnt100++;
+        }
+        else if (ht->buckets[i].size - avg > 20)
+        {
+            cnt20++;
+        }
+    }
+
+    var = temp_sum / ht->buckets_count;
+
+    printf("biggest-bucket:            %lld\n", max);
+    printf("buckets-greater-than-20:   %lld\n", cnt20);
+    printf("buckets-greater-than-100:  %lld\n", cnt100);
+    printf("buckets-greater-than-1000: %lld\n", cnt1000);
+    printf("buckets-count:             %lld\n", ht->buckets_count);
+    printf("nodes-count:               %lld\n", ht->nodes_count);
+    printf("average:                   %.02f\n", avg);
+    printf("variance:                  %.02f\n", var);
+}
+
 c4_bitboard generate_random_board()
 {
     c4_bitboard b = {0};
@@ -310,39 +376,44 @@ c4_bitboard generate_random_board()
     return b;
 }
 
+
 int main()
 {
     initialize_zob_table();
 
-    // c4_bitboard board = {0};
-    // board.r_board = 0x0000000000010014;
-    // board.y_board = 0x0000000000000608;
-    // hash_t hash =  compute_hash(&board);
-    // printf("hash: 0x%08X\n", hash);
-    // board.r_board = 0x0000000000030014;
-    // hash ^= zob_table[3][3][0];
-    // hash_t new_hash = compute_hash(&board);
-    // printf("hash: 0x%08X, new-hash: 0x%08X\n", hash, new_hash);
-    // board.r_board = 0x0000000000010014;
-    // hash ^= zob_table[3][3][0];
-    // new_hash = compute_hash(&board);
-    // printf("hash: 0x%08X, new-hash: 0x%08X\n", hash, new_hash);
+    int boards_count = 60000000;
+    clock_t t;
+    double time_taken = 0.0;
 
-#define boards_count (2000)
-    c4_bitboard b[boards_count];
-    score_t s[boards_count];
+    c4_bitboard b = {0};
+    score_t s = 0;
 
-    hash_table_t* ht = ht_create(20000);
+    t = clock();
+    hash_table_t* ht = ht_create(20000000);
+    t = clock() - t;
+    time_taken = ((double)t)/CLOCKS_PER_SEC;
+    printf("ht_create took: %f seconds\n", time_taken);
+
+    t = clock();
 
     for (int i = 0; i < boards_count; i++)
     {
-        b[i] = generate_random_board();
-        s[i] = (rand() % 100) + 1;
-        ht_put(ht, &b[i], &s[i]);
+        b = generate_random_board();
+        s = (rand() % 100) + 1;
+        ht_put(ht, &b, &s);
     }
 
-    ht_print(ht);
+    t = clock() - t;
+    time_taken = ((double)t)/CLOCKS_PER_SEC;
+    printf("generate_random_board + ht_put took: %f seconds\n", time_taken);
+
+    ht_stats(ht);
+
+    t = clock();
+
     ht_free(&ht);
-    printf("freed\n");
-    ht_print(ht);
+
+    t = clock() - t;
+    time_taken = ((double)t)/CLOCKS_PER_SEC;
+    printf("ht_free took: %f seconds\n", time_taken);
 }
