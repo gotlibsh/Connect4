@@ -29,7 +29,6 @@ def run_game():
         turn %= 2
 
     print(f'winner: {turn_to_player(winner)}')
-    print(f'final position: red={hex(red)} yellow={hex(yellow)}')
 
 
 def main():
