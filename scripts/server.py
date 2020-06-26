@@ -8,7 +8,6 @@ CORS(app)
 
 CONSOLE_ARGS = None
 
-
 def convert_color_to_number(turn):
     return 0 if turn == 'red' else 1 if turn == 'yellow' else None
 
@@ -23,9 +22,9 @@ def convert_2d_board_to_bitboard(two_d_board):
 
     for row in two_d_board:
         for col in row:
-            if col == 'red':
+            if col in ('X', 'r', 'red'):
                 r |= (1 << (41-index))
-            if col == 'yellow':
+            if col in ('O', 'y', 'yellow'):
                 y |= (1 << (41-index))
             index += 1
 
@@ -72,7 +71,7 @@ def evaluate():
     return jsonify(column=column, is_game_over=game_over, winner=convert_number_to_color(winner), eval=evaluation)
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('engine_path')
     
@@ -80,3 +79,7 @@ if __name__ == '__main__':
     CONSOLE_ARGS = parser.parse_args()
 
     app.run()
+
+
+if __name__ == '__main__':
+    main()
