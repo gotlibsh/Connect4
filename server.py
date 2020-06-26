@@ -1,7 +1,10 @@
 import argparse
 from subprocess import Popen, PIPE
 from flask import Flask, request, jsonify
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
 
 CONSOLE_ARGS = None
 
