@@ -1,30 +1,12 @@
 import argparse
-from subprocess import Popen, PIPE
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from wrapper import get_machine_move, is_game_over 
 
 app = Flask(__name__)
 CORS(app)
 
 CONSOLE_ARGS = None
-
-
-def is_game_over(red, yellow):
-    p = Popen([CONSOLE_ARGS.engine_path, 'util', 'isover'], stdin=PIPE, stdout=PIPE)
-    
-    params = bytearray(' '.join([hex(red), hex(yellow)]), 'utf-8')
-    is_game_over, winner = p.communicate(params)[0].split()
-
-    return (int(is_game_over), int(winner))
-
-
-def get_machine_move(red_board, yellow_board, depth, turn):
-    p = Popen([CONSOLE_ARGS.engine_path, 'util', 'eval'], stdin=PIPE, stdout=PIPE)
-    
-    params = bytearray(' '.join([hex(red_board), hex(yellow_board), str(depth), str(turn)]), 'utf-8')
-    new_red, new_yellow, evaluation = p.communicate(params)[0].split()
-
-    return (int(new_red, 16), int(new_yellow, 16), int(evaluation))
 
 
 def convert_color_to_number(turn):
@@ -74,18 +56,18 @@ def evaluate():
     turn = convert_color_to_number(client_req['turn'])
 
     # check if given board is already game-over
-    game_over, winner = is_game_over(red, yellow)
+    game_over, winner = is_game_over(red, yellow, CONSOLE_ARGS.engine_path)
 
     # if game-over, return immediately
     if game_over:
         return jsonify(column=None, is_game_over=True, winner=convert_number_to_color(winner), eval=None)
 
     # evaluate the given board position and get a new move
-    new_red, new_yellow, evaluation = get_machine_move(red_board=red, yellow_board=yellow, depth=depth, turn=turn)
+    new_red, new_yellow, evaluation = get_machine_move(red_board=red, yellow_board=yellow, depth=depth, turn=turn, engine_path=CONSOLE_ARGS.engine_path)
     column = get_new_column(red, yellow, new_red, new_yellow)
 
     # check if new board is game-over
-    game_over, winner = is_game_over(new_red, new_yellow)
+    game_over, winner = is_game_over(new_red, new_yellow, CONSOLE_ARGS.engine_path)
 
     return jsonify(column=column, is_game_over=game_over, winner=convert_number_to_color(winner), eval=evaluation)
 
@@ -94,6 +76,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('engine_path')
     
+    global CONSOLE_ARGS
     CONSOLE_ARGS = parser.parse_args()
 
     app.run()
