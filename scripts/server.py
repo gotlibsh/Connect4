@@ -73,7 +73,7 @@ def evaluate():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('engine_path')
+    parser.add_argument('engine_path', help='path to the engine')
     
     global CONSOLE_ARGS
     CONSOLE_ARGS = parser.parse_args()

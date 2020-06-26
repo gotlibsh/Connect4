@@ -34,7 +34,7 @@ def run_game():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('engine_path')
+    parser.add_argument('engine_path', help='path to the engine')
     parser.add_argument('-r', '--red', default=5, help='depth search for RED', metavar='')
     parser.add_argument('-y', '--yellow', default=5, help='depth search for YELLOW', metavar='')
     parser.add_argument('--graphic', action='store_true', help='show a graphic board after each move')
