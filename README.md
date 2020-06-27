@@ -160,5 +160,13 @@ Otherwise, you'll get a failure message pointing to the file and line causing it
 Assertion failed - File: C:\Users\user\projects\connect4\tester.c - Line: 521
 ```
 
+## GUI
+
+Web Link: [Connect 4 Heroku App](https://connect4-react.herokuapp.com/)
+
+For the backend, the [Python Server Script](scripts/server.py) was used (with slight modifications to fit for Heroku deployment).<br/>
+For the frontend the [React App](gui/) was used. Please see [here](gui/README.md) how to setup the GUI locally.<br/>
+Credits: [Jacob Gottlieb](https://github.com/GottliebJacob) did an amazing job building this wonderful react application.<br/>
+
 ## Conclusion
 ### Go play and have fun!!!
