@@ -2,6 +2,9 @@
 
 Here are the instructions to setup the web-gui locally on your machine.<br/>
 
+### Note
+Although it works for both Windows/Linux, the instructions here are for Windows only.
+
 ## Prerequisites
 
 Make sure you have the following installed on your machine:
@@ -33,15 +36,8 @@ connect4/scripts> cd ../gui
 ```
 
 Finally lets start the game:
-
-### Windows
 ```
 connect4/gui> npm run game-windows
-```
-
-### Linux
-```
-connect4/gui> npm run game-linux
 ```
 
 The web browser should open and show the game menu.
