@@ -40,11 +40,6 @@ bool is_game_over(c4_bitboard* board, player* p)
 {
     *p = EMPTY;
 
-    if (IS_BOARD_FULL(board->r_board, board->y_board))
-    {
-        return true;
-    }
-
     // looking for winning sequences horizontally
     for (int row = 1; row <= BOARD_HEIGHT; row++)
     {
@@ -117,6 +112,11 @@ bool is_game_over(c4_bitboard* board, player* p)
         }
     }
 
+    if (IS_BOARD_FULL(board->r_board, board->y_board))
+    {
+        return true;
+    }
+    
     return false;
 }
 
