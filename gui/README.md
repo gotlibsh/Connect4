@@ -37,7 +37,7 @@ connect4/scripts> cd ../gui
 
 Finally lets start the game:
 ```
-connect4/gui> npm run game-windows
+connect4/gui> npm run game
 ```
 
 The web browser should open and show the game menu.
