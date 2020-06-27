@@ -5,11 +5,13 @@ IF(MSVC)
     add_compile_options(/wd4996)
 ENDIF()
 
+include_directories(include)
+
 add_executable( Connect4
-                main.c
-                c4_utils.c
-                evaluation.c
-                minimax.c
-                play_mode.c
-                util_mode.c
-                tester.c)
+                src/main.c
+                src/c4_utils.c
+                src/evaluation.c
+                src/minimax.c
+                src/play_mode.c
+                src/util_mode.c
+                src/tester.c)
