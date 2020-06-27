@@ -126,12 +126,12 @@ void test_drop_piece()
     assert(b.y_board == 0x00000000C0024494);
 }
 
-extern int16_t calc_rule_of_2(c4_bitboard* board);
+extern score_t calc_rule_of_2(c4_bitboard* board);
 void test_rule_of_2()
 {
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
-    extern int8_t rule_of_2_magic_score;
+    extern score_t rule_of_2_magic_score;
 
 
     /*
@@ -171,12 +171,12 @@ void test_rule_of_2()
     assert(calc_rule_of_2(pb) == (3+2)*(rule_of_2_magic_score) - (1+2+1)*(rule_of_2_magic_score));
 }
 
-extern int16_t calc_rule_of_3(c4_bitboard* board);
+extern score_t calc_rule_of_3(c4_bitboard* board);
 void test_rule_of_3()
 {
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
-    extern int8_t rule_of_3_magic_score;
+    extern score_t rule_of_3_magic_score;
 
 
     /*
@@ -240,12 +240,12 @@ void test_rule_of_3()
     assert(calc_rule_of_3(pb) == (2-1)*(rule_of_3_magic_score));
 }
 
-extern int16_t calc_rule_of_center(c4_bitboard* board);
+extern score_t calc_rule_of_center(c4_bitboard* board);
 void test_rule_of_center()
 {
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
-    extern int8_t rule_of_center_magic_score;
+    extern score_t rule_of_center_magic_score;
 
 
     /*
@@ -285,12 +285,12 @@ void test_rule_of_center()
     assert(calc_rule_of_center(pb) == 0);
 }
 
-extern int16_t calc_winning_rule(c4_bitboard* board);
+extern score_t calc_winning_rule(c4_bitboard* board);
 void test_winning_rule()
 {
     c4_bitboard b = {0};
     c4_bitboard* pb = &b;
-    extern int16_t winning_rule_magic_score;
+    extern score_t winning_rule_magic_score;
 
 
     assert(calc_winning_rule(pb) == 0);

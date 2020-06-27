@@ -128,19 +128,19 @@ score_t calc_rule_of_x(c4_bitboard* board, uint8_t x, uint16_t magic_score)
     return score;
 }
 
-int8_t rule_of_2_magic_score = 3;
+score_t rule_of_2_magic_score = 3;
 score_t calc_rule_of_2(c4_bitboard* board)
 {
     return calc_rule_of_x(board, 2, rule_of_2_magic_score);
 }
 
-int8_t rule_of_3_magic_score = 5;
+score_t rule_of_3_magic_score = 5;
 score_t calc_rule_of_3(c4_bitboard* board)
 {
     return calc_rule_of_x(board, 3, rule_of_3_magic_score);
 }
 
-int8_t rule_of_center_magic_score = 2;
+score_t rule_of_center_magic_score = 2;
 score_t calc_rule_of_center(c4_bitboard* board)
 {
     uint64_t r_center = GET_COL(board->r_board, 4);
@@ -149,7 +149,7 @@ score_t calc_rule_of_center(c4_bitboard* board)
     return (score_t)(BIT_COUNT(r_center) - BIT_COUNT(y_center))*(rule_of_center_magic_score);
 }
 
-int16_t winning_rule_magic_score = 1000;
+score_t winning_rule_magic_score = 1000;
 score_t calc_winning_rule(c4_bitboard* board)
 {
     piece winner;
