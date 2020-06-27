@@ -18,8 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "game-windows": "concurrently \"py -3 ../scripts/server.py Connect4.exe\" \"react-scripts start\"",
-    "game-linux": "concurrently \"python3 ../scripts/server.py Connect4\" \"react-scripts start\""
+    "game-windows": "concurrently \"py -3 ../scripts/server.py ./Connect4.exe\" \"react-scripts start\"",
+    "game-linux": "concurrently \"python3 ../scripts/server.py ./Connect4\" \"react-scripts start\""
   },
   "eslintConfig": {
     "extends": "react-app"
