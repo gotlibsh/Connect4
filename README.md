@@ -160,6 +160,14 @@ Otherwise, you'll get a failure message pointing to the file and line causing it
 Assertion failed - File: C:\Users\user\projects\connect4\tester.c - Line: 521
 ```
 
+## Scripts
+Under the [scripts](scripts/) folder you can find Python scripts that take advantage of the program's Util mode.
+#### List of scripts:
+* [machine-vs-machine](scripts/machine_vs_machine.py) - allows you to launch a battles between the machine and himself and see their game played out (you can specify a different depth for each side)
+* [server](scripts/server.py) - this script is used in the GUI web project (below) and serves as the backend server that communicates with the engine to get the machine moves
+* [test-server](scripts/test_server.py) - small utility to test locally the server's response to certain board positions. this should run only after the server is launched
+* [wrapper](scripts/wrapper.py) - utility functions which allow easy communication with the engine over command line interface. this is used by the server script
+
 ## GUI
 
 Web Link: [Connect 4 Heroku App](https://connect4-react.herokuapp.com/)
