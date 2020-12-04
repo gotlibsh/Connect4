@@ -54,20 +54,20 @@ In play mode, you play versus the machine.
 You can specify who's the starting player by passing a parameter:
 
 ```
-./Connect4 human
+./Connect4 play human
 ```
 
 if you wish to be the starting player, or:
 
 ```
-./Connect4 machine
+./Connect4 play machine
 ```
 
 if you wish for the machine to be the starting player.
 Additionally, you can specify the depth in which the machine will go to search for his moves by passing a second parameter:
 
 ```
-./Connect4 human 10
+./Connect4 play human 10
 ```
 
 this will force the machine to search up to depth 10.
