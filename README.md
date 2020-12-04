@@ -162,6 +162,21 @@ Assertion failed - File: C:\Users\user\projects\connect4\tester.c - Line: 521
 
 ## Scripts
 Under the [scripts](scripts/) folder you can find Python scripts that take advantage of the program's Util mode.
+
+#### Prerequisites
+Install a virtual environment:
+```
+connect4/scripts> py -m venv venv
+```
+Activate virtual environment (Windows):
+```
+connect4/scripts> venv/Scripts/activate
+```
+Install requirements:
+```
+connect4/scripts> py install -r requirements.txt
+```
+
 #### List of scripts:
 * [machine-vs-machine](scripts/machine_vs_machine.py) - allows you to launch a battles between the machine and himself and see their game played out (you can specify a different depth for each side)
 * [server](scripts/server.py) - this script is used in the GUI web project (below) and serves as the backend server that communicates with the engine to get the machine moves
